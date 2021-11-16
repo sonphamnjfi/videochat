@@ -4,8 +4,14 @@
  */
 package video;
 
+import com.github.sarxos.webcam.Webcam;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import javax.swing.ImageIcon;
@@ -36,6 +42,7 @@ public class server extends javax.swing.JFrame {
         chat = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Server");
 
         img_server.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 
@@ -102,18 +109,23 @@ public class server extends javax.swing.JFrame {
             }
         });
         
+
         System.out.println("wait...");
         ServerSocket sv = new ServerSocket(7800);
         Socket s = sv.accept();
-        
         System.out.println("Done connect !!");
-        ObjectInputStream ois = new ObjectInputStream(s.getInputStream());
+        ObjectOutputStream oup = new ObjectOutputStream(s.getOutputStream());
         ImageIcon ic;
-        
-        
+        BufferedImage bi;
+        Webcam cam = Webcam.getDefault();
+        cam.open(); // bat cam
+
         while(true){
-        ic = (ImageIcon) ois.readObject();
-        img_server.setIcon(ic);
+            bi= cam.getImage(); // get img
+            ic = new ImageIcon(bi); // exchange to icon
+            img_server.setIcon(ic); // set icon
+            oup.writeObject(ic); // send
+
         }   
         
     }
