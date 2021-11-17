@@ -4,12 +4,21 @@
  */
 package videostream;
 
+import com.github.sarxos.webcam.Webcam;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
+import static video.server.img_server;
 
 /**
  *
@@ -134,16 +143,24 @@ public class VDServer extends javax.swing.JFrame {
         DatagramSocket server=new DatagramSocket();
         System.out.println("server is running..");
         
-        int i=0;
+        ByteArrayOutputStream bos =new ByteArrayOutputStream(1000);
+        ImageIcon ic;
+        BufferedImage bi;
+        Webcam cam = Webcam.getDefault();
+        cam.open(); // bat cam
+
         while(true){
-            String s="message " +i;
-            DatagramPacket gui=new DatagramPacket(s.getBytes(),s.length(),
-                    InetAddress.getByName("224.2.2.3"), 2207);
+            bi= cam.getImage(); // get to img
+            ic = new ImageIcon(bi); // exchange to icon
+            img_server.setIcon(ic); // set icon
+            ImageIO.write(bi, "jpg", bos);
+            byte[] bytearray = bos.toByteArray();
+           
+            
+//           // 172.22.0.0
+            DatagramPacket gui= new DatagramPacket(bytearray, bytearray.length, InetAddress.getByName("172.22.0.0"), 7800);
             server.send(gui);
-            System.out.println(s);
-            Thread.sleep(2000);
-            i++;
-        }
+        } 
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

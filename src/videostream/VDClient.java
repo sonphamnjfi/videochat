@@ -4,6 +4,17 @@
  */
 package videostream;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.InetAddress;
+import java.net.MulticastSocket;
+import java.net.UnknownHostException;
+import java.util.Base64;
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
+
 /**
  *
  * @author sonph
@@ -91,7 +102,7 @@ public class VDClient extends javax.swing.JFrame {
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
+    public static void main(String args[]) throws UnknownHostException, IOException {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -121,6 +132,23 @@ public class VDClient extends javax.swing.JFrame {
                 new VDClient().setVisible(true);
             }
         });
+        MulticastSocket client=new MulticastSocket(7800);
+        client.joinGroup(InetAddress.getByName("172.22.133.186"));
+        ImageIcon ic;
+        BufferedImage bi;
+        
+        while(true){
+            byte[] buf=new byte[1024];
+            DatagramPacket nhan=new DatagramPacket(buf,buf.length);
+            client.receive(nhan);
+            byte[] bytearray = Base64.getDecoder().decode(nhan.toString());
+               
+            bi=ImageIO.read(new ByteArrayInputStream(bytearray));
+            ic = new ImageIcon(bi);
+            img_client.setIcon(ic);
+        }
+        
+        
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -6,6 +6,7 @@ package video;
 
 import com.github.sarxos.webcam.Webcam;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -14,6 +15,7 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 
 /**
@@ -115,17 +117,19 @@ public class server extends javax.swing.JFrame {
         Socket s = sv.accept();
         System.out.println("Done connect !!");
         ObjectOutputStream oup = new ObjectOutputStream(s.getOutputStream());
+//        ByteArrayOutputStream bos =new ByteArrayOutputStream(1000);
         ImageIcon ic;
         BufferedImage bi;
         Webcam cam = Webcam.getDefault();
         cam.open(); // bat cam
 
         while(true){
-            bi= cam.getImage(); // get img
+            bi= cam.getImage(); // get to img
+//            ImageIO.write(bi, "jpg", bos);
+            
             ic = new ImageIcon(bi); // exchange to icon
             img_server.setIcon(ic); // set icon
             oup.writeObject(ic); // send
-
         }   
         
     }

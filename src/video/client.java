@@ -120,8 +120,8 @@ public class client extends javax.swing.JFrame {
                 new client().setVisible(true);
             }
         });
-        
-        Socket client = new Socket("127.0.0.1", 7800);
+        // 172.22.133.186
+        Socket client = new Socket("172.22.133.186", 7800);
         ObjectInputStream ois = new ObjectInputStream(client.getInputStream());
         ImageIcon ic;
 
@@ -129,7 +129,6 @@ public class client extends javax.swing.JFrame {
             ic = (ImageIcon) ois.readObject(); // receive
             img_client.setIcon(ic);
         }
-        
         
         
     }
